@@ -78,30 +78,20 @@ class RetrievalPipeline(ABC):
 
     def retrieve(self, query, paragraphs, k):
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        # sentence_embedding with paragraphs
         model = SentenceTransformer("all-mpnet-base-v2")
-        # p_embeddings = []
-        # for i in paragraphs:
-        #     p_embeddings.append(model.encode(i))
+
         p_embeddings = model.encode(paragraphs)
-        # sentence_embedding with reports
+
         query_embeddings = model.encode(query)
-        print("report", query_embeddings.shape)
-        print("p_embedding", p_embeddings.shape)
+
         retrievaler = HopfieldRetrievalModel().to(device)
         result = retrievaler(
             torch.tensor(p_embeddings).to(device) * 100,
             torch.tensor(query_embeddings).to(device) * 100,
         )
         input_ids = torch.topk(result, k, dim=1).indices
-
-        # mask = ~(input_ids == input_ids[0]).any(dim=1)
-        # input_ids = input_ids[mask]
         indices = input_ids[0]
-        # indices = set()
-        # for input_id in input_ids:
-        #     for id in input_id:
-        #         indices.add(id.item())
+
         knowledge = []
         for indice in indices:
             knowledge.append(paragraphs[indice])

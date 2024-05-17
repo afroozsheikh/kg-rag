@@ -99,11 +99,11 @@ class LlamaIndexPipeline(ABC):
             index.set_index_id("index_health")
             for query, domain_knowledge in self.knowledge_dict.values():
                 prompt = self.generate_prompt(
-                    medical_report, query=query, domain_knowledge=domain_knowledge
+                    patient_report_path=medical_report,
+                    domain_knowledge=domain_knowledge,
                 )
-
                 query_engine = index.as_query_engine()
-                response = str(query_engine.query(i))
+                response = str(query_engine.query(query))
                 score_ls.append(self.extract_scores(response))
 
             patients_scores[i] = score_ls
