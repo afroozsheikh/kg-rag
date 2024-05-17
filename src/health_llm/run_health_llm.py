@@ -39,7 +39,7 @@ def parse_arguments():
 
 
 def main(args):
-    os.environ["OPENAI_API_KEY"] = "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"
+    os.environ["OPENAI_API_KEY"] = ""
     openai.api_key = os.environ.get("OPENAI_API_KEY")
 
     retrieval = RetrievalPipeline(
